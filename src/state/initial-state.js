@@ -9,5 +9,5 @@ export const initialState = Object.freeze({
     code: defaultCode,
     config: defaultConfig,
     indentType: "space",
-    indentSize: 2,
+    indentSize: 4,
 })
