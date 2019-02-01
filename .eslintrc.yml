@@ -4,12 +4,7 @@ extends:
   - plugin:@mysticatea/+modules
   - plugin:@mysticatea/+browser
 
-rules:
-  no-trailing-spaces: error
-  require-unicode-regexp: "off"
-
 overrides:
   - files: "*.vue"
     rules:
-      "@mysticatea/vue/component-name-in-template-casing": [error, kebab-case]
       require-noopener: error

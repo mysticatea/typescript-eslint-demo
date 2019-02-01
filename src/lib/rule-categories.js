@@ -5,43 +5,36 @@ import { linter } from "./eslint"
 export const ruleCategories = (() => {
     const ruleMap = linter.getRules()
     const categoryMap = {
-        essential: {
-            name: "Priority A: Essential",
+        problem: {
+            name: "Best practice rules",
             rules: [],
         },
-        "strongly-recommended": {
-            name: "Priority B: Strongly Recommended",
+        suggestion: {
+            name: "Suggestion rules",
             rules: [],
         },
-        recommended: {
-            name: "Priority C: Recommended",
-            rules: [],
-        },
-        "use-with-caution": {
-            name: "Priority D: Use with Caution",
+        layout: {
+            name: "Whitespace rules",
             rules: [],
         },
         uncategorized: {
             name: "Uncategorized",
             rules: [],
         },
-        base: {
-            name: "Base Rules",
-            rules: [],
-        },
         core: {
-            name: "ESLint Core Rules",
+            name: "ESLint core rules",
             rules: [],
         },
     }
+
     for (const entry of ruleMap) {
         const name = entry[0]
         const meta = entry[1].meta
         if (meta == null || meta.docs == null || meta.deprecated) {
             continue
         }
-        const category = name.startsWith("vue/")
-            ? categoryMap[meta.docs.category] || categoryMap.uncategorized
+        const category = name.startsWith("@typescript-eslint/")
+            ? categoryMap[meta.type] || categoryMap.uncategorized
             : categoryMap.core
 
         category.rules.push({

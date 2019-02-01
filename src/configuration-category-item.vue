@@ -70,10 +70,10 @@ export default {
     align-items: center;
     padding: 4px;
     padding-left: 16px;
-    border-bottom: 1px solid #e8f5e9;
+    border-bottom: 1px solid #bbdefb;
 }
 .configuration-category-item__root:last-child > label {
-    border-bottom: 1px solid #4caf50;
+    border-bottom: 1px solid #2196f3;
 }
 
 .configuration-category-item__root > label:hover {

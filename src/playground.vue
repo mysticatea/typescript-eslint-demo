@@ -65,11 +65,7 @@ export default {
             const indentType =
                 this.indentType === "space" ? this.indentSize : "tab"
 
-            for (const ruleId of [
-                "indent",
-                "vue/html-indent",
-                "vue/script-indent",
-            ]) {
+            for (const ruleId of ["indent", "@typescript-eslint/indent"]) {
                 const severity = config.rules[ruleId]
                 config.rules[ruleId] = [severity, indentType]
             }
@@ -78,7 +74,7 @@ export default {
         },
 
         filename() {
-            return this.looksHtml ? "vue-eslint-demo.vue" : "vue-eslint-demo.js"
+            return "typescript-eslint-demo.tsx"
         },
 
         formatOptions() {
@@ -89,15 +85,11 @@ export default {
         },
 
         language() {
-            return this.looksHtml ? "html" : "javascript"
+            return "typescript"
         },
 
         linter() {
             return linter
-        },
-
-        looksHtml() {
-            return this.code.trim().startsWith("<")
         },
     },
 

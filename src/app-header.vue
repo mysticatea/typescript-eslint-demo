@@ -1,9 +1,10 @@
 <template>
     <div class="app-header">
         <div class="app-header__title">
-            Playground for <a href="https://github.com/vuejs/eslint-plugin-vue#readme" target="_blank" rel="noopener">
-                eslint-plugin-vue
-            </a>.
+            Playground for
+            <a href="https://typescript-eslint.io/eslint-plugin" target="_blank" rel="noopener">
+                @typescript-eslint/eslint-plugin
+            </a>
         </div>
         <label class="app-header__option-item">
             <select :value="indentSize" @change="onIndentSizeChange">
@@ -81,8 +82,8 @@ export default {
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
-    background-color: #a5d6a7;
-    border-bottom: 1px solid #4caf50;
+    background-color: #bbdefb;
+    border-bottom: 1px solid #2196f3;
 }
 .app-header__title {
     flex-grow: 1;
@@ -95,8 +96,8 @@ export default {
 }
 .app-header__option-item > select {
     padding: 4px;
-    border: 1px solid #4caf50;
+    border: 1px solid #2196f3;
     border-radius: 3px;
-    background-color: #e8f5e9;
+    background-color: #e3f2fd;
 }
 </style>

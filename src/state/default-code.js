@@ -1,32 +1,23 @@
 export default `
-<template>
-  <div v-else>
-    Hello, {{ name }}!
-    <div
-      v-for="item of items"
-      key="item.id"
-    >
-      {{ item.name}}
-    </div>
-    <button v-on:click="onClick">Button</button>
-  </div>
-</template>
-<script>
-export default {
-  name: 'App',
-  data: {
-    name: 'World',
-    items: [
-      {id: 1, name: "a"},
-      {id: 2, name: "b"},
-      {id: 3, name: "c"}
-    ]
-  },
-  methods: {
-    onClick() {
-      // do something.
+class Greeter {
+    greeting: string;
+
+    constructor(message: string) {
+        this.greeting = message;
     }
-  }
+
+    greet() {
+        return "Hello, " + this.greeting;
+    }
 }
-</script>
+
+let greeter = new Greeter("world");
+
+let button = document.createElement('button');
+button.textContent = "Say Hello";
+button.onclick = function() {
+    alert(greeter.greet());
+}
+
+document.body.appendChild(button);
 `.trim()

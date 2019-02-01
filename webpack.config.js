@@ -1,47 +1,48 @@
-/*eslint-env node */
-
+const fs = require("fs")
 const path = require("path")
 const postcssPresetEnv = require("postcss-preset-env")
 const VueLoaderPlugin = require("vue-loader/lib/plugin")
 
 // Shim for `src/versions.js`
 const VERSIONS = `export default ${JSON.stringify({
-    "vue-eslint-demo": {
-        repo: "mysticatea/vue-eslint-demo",
+    "typescript-eslint-demo": {
+        repo: "mysticatea/typescript-eslint-demo",
         version: require("./package.json").version,
+    },
+    "@typescript-eslint/eslint-plugin": {
+        repo: "https://typescript-eslint.io/eslint-plugin",
+        version: require("@typescript-eslint/eslint-plugin/package.json")
+            .version,
+    },
+    "@typescript-eslint/parser": {
+        repo: "https://typescript-eslint.io/parser",
+        version: require("@typescript-eslint/parser/package.json").version,
     },
     eslint: {
         repo: "eslint/eslint",
         version: require("eslint/package.json").version,
     },
-    "eslint-plugin-vue": {
-        repo: "vuejs/eslint-plugin-vue",
-        version: require("eslint-plugin-vue/package.json").version,
-    },
-    "vue-eslint-parser": {
-        repo: "mysticatea/vue-eslint-parser",
-        version: require("vue-eslint-parser/package.json").version,
-    },
-    "babel-eslint": {
-        repo: "babel/babel-eslint",
-        version: require("babel-eslint/package.json").version,
-    },
-    "typescript-eslint-parser": {
-        repo: "eslint/typescript-eslint-parser",
-        version: require("typescript-eslint-parser/package.json").version,
-    },
     typescript: {
-        repo: "Microsoft/typescript",
+        repo: "Microsoft/TypeScript",
         version: require("typescript/package.json").version,
     },
 })}`
 
-// Shim for vue-eslint-parser.
-const IMPORT_PARSER = `(
-    parserOptions.parser === "babel-eslint" ? require("babel-eslint") :
-    parserOptions.parser === "typescript-eslint-parser" ? require("typescript-eslint-parser") :
-    /* otherwise */ require("espree")
-)`
+// Shim for `@typescript-eslint/eslint-plugin/lib/index.js`
+const tsPluginRuleRoot = path.resolve(
+    __dirname,
+    "node_modules/@typescript-eslint/eslint-plugin/lib/rules",
+)
+const tsPluginIndex = `module.exports.rules = {${fs
+    .readdirSync(tsPluginRuleRoot)
+    .map(filename => path.basename(filename, ".js"))
+    .map(
+        name =>
+            `${JSON.stringify(name)}: require(${JSON.stringify(
+                `./rules/${name}`,
+            )})`,
+    )
+    .join(",")}}`
 
 module.exports = env => {
     const prod = Boolean(env && env.production)
@@ -59,12 +60,12 @@ module.exports = env => {
         module: {
             rules: [
                 {
-                    test: /\.vue$/,
+                    test: /\.vue$/u,
                     use: ["vue-loader"],
                 },
                 {
-                    test: /\.m?js$/,
-                    exclude: /node_modules[\\/](?!vue-eslint-editor)/,
+                    test: /\.m?js$/u,
+                    exclude: /node_modules[\\/](?!vue-eslint-editor)/u,
                     use: [
                         {
                             loader: "babel-loader",
@@ -93,7 +94,7 @@ module.exports = env => {
                     ],
                 },
                 {
-                    test: /\.css$/,
+                    test: /\.css$/u,
                     use: [
                         {
                             loader: "vue-style-loader",
@@ -117,7 +118,7 @@ module.exports = env => {
                     ],
                 },
                 {
-                    test: /\.(png|jpg|gif|svg|eot|ijmap|ttf|woff2?)$/,
+                    test: /\.(png|jpg|gif|svg|eot|ijmap|ttf|woff2?)$/u,
                     use: [
                         {
                             loader: "url-loader",
@@ -129,7 +130,7 @@ module.exports = env => {
                 },
                 // Replace `./src/versions.js` with the current versions.
                 {
-                    test: /src[\\/]versions/,
+                    test: /src[\\/]versions/u,
                     use: [
                         {
                             loader: "string-replace-loader",
@@ -141,37 +142,9 @@ module.exports = env => {
                         },
                     ],
                 },
-                // `vue-eslint-parser` has `require(parserOptions.parser || "espree")`.
-                // Modify it by a static importing.
-                {
-                    test: /node_modules[/\\]vue-eslint-parser[/\\]index\.js$/,
-                    use: [
-                        {
-                            loader: "string-replace-loader",
-                            options: {
-                                search:
-                                    'typeof parserOptions.parser === "string"\n        ? require(parserOptions.parser)\n        : require("espree")',
-                                replace: IMPORT_PARSER,
-                            },
-                        },
-                    ],
-                },
-                // Patch for `babel-eslint` -- accessing `global` causes build error.
-                {
-                    test: /node_modules[/\\]babel-eslint[/\\]lib[/\\]analyze-scope\.js$/,
-                    use: [
-                        {
-                            loader: "string-replace-loader",
-                            options: {
-                                search: 'require("./patch-eslint-scope")',
-                                replace: "Object",
-                            },
-                        },
-                    ],
-                },
                 // Patch for `eslint-utils` -- accessing `global` causes build error.
                 {
-                    test: /node_modules[/\\]eslint-utils[/\\]index\.m?js$/,
+                    test: /node_modules[/\\]eslint-utils[/\\]index\.m?js$/u,
                     use: [
                         {
                             loader: "string-replace-loader",
@@ -193,13 +166,27 @@ module.exports = env => {
                 },
                 // Patch for `typescript`
                 {
-                    test: /node_modules[/\\]typescript[/\\]lib[/\\]typescript.js$/,
+                    test: /node_modules[/\\]typescript[/\\]lib[/\\]typescript.js$/u,
                     use: [
                         {
                             loader: "string-replace-loader",
                             options: {
                                 search: "require\\(.+?\\)",
                                 replace: "null",
+                                flags: "g",
+                            },
+                        },
+                    ],
+                },
+                // Patch for `@typescript-eslint/parser` -- eliminate dynamic loading.
+                {
+                    test: /node_modules[/\\]@typescript-eslint[/\\]eslint-plugin[/\\]lib[/\\]index\.js$/u,
+                    use: [
+                        {
+                            loader: "string-replace-loader",
+                            options: {
+                                search: "[\\s\\S]+", // whole file.
+                                replace: tsPluginIndex,
                                 flags: "g",
                             },
                         },

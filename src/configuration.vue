@@ -1,8 +1,5 @@
 <template>
     <ul class="configuration__root">
-        <configuration-parser-select
-            :config="config"
-        />
         <configuration-rules-select
             v-for="category of categories"
             :key="category.name"
@@ -13,14 +10,13 @@
 </template>
 
 <script>
-import ConfigurationParserSelect from "./configuration-parser-select.vue"
 import ConfigurationRulesSelect from "./configuration-rules-select.vue"
 import { ruleCategories } from "./lib/rule-categories"
 
 export default {
     name: "Configuration",
 
-    components: { ConfigurationParserSelect, ConfigurationRulesSelect },
+    components: { ConfigurationRulesSelect },
 
     props: {
         config: {

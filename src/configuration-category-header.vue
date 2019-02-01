@@ -63,8 +63,8 @@ export default {
     position: sticky;
     top: 0;
     padding: 8px;
-    background-color: #e8f5e9;
-    border-bottom: 1px solid #4caf50;
+    background-color: #e3f2fd;
+    border-bottom: 1px solid #2196f3;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
