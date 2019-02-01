@@ -856,7 +856,8 @@ export default Object.freeze({
             const rules = {}
             for (const [name, rule] of linter.getRules()) {
                 const enabled =
-                    name.startsWith("@typescript-eslint/") ||
+                    (name.startsWith("@typescript-eslint/") &&
+                        name !== "@typescript-eslint/restrict-plus-operands") ||
                     rule.meta.docs.recommended
                 rules[name] = enabled ? 2 : 0
             }
