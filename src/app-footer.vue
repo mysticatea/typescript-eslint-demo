@@ -5,7 +5,7 @@
             :key="name"
             class="app-footer__version-item"
         >
-            <a :href="'https://github.com/' + v.repo" target="_blank" rel="noopener">
+            <a :href="v.repo.startsWith('http') ? v.repo : 'https://github.com/' + v.repo" target="_blank" rel="noopener">
                 {{ name }}
             </a>
             v{{ v.version }}
